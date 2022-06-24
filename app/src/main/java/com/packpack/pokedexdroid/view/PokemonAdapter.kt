@@ -3,10 +3,12 @@ package com.packpack.pokedexdroid.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.packpack.pokedexdroid.databinding.PokemonItemBinding
 import com.packpack.pokedexdroid.domain.Pokemon
+import com.packpack.pokedexdroid.utils.TypeUtils
 
 class PokemonAdapter(private val pokemonList: List<Pokemon?>) :
     RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() {
@@ -21,25 +23,52 @@ class PokemonAdapter(private val pokemonList: List<Pokemon?>) :
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = pokemonList[position]
-
         holder.bindView(pokemon)
     }
 
     class PokemonViewHolder(private val itemBinding: PokemonItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindView(pokemon: Pokemon?) = with(itemView) {
-            pokemon?.let { pokemon ->
-                Glide.with(itemView.context).load(pokemon.imageUrl).into(itemBinding.ivPokemonImage)
-                val idText = "Nº ${pokemon.formattedId}"
-                itemBinding.tvPokemonId.text = idText
-                itemBinding.tvPokemonName.text = pokemon.formattedName
-                itemBinding.tvType1.text = pokemon.types[0].name.replaceFirstChar { it.uppercase() }
-                if (pokemon.types.size > 1) {
-                    itemBinding.tvType2.visibility = View.VISIBLE
-                    itemBinding.tvType2.text =
-                        pokemon.types[1].name.replaceFirstChar { it.uppercase() }
-                } else {
-                    itemBinding.tvType2.visibility = View.GONE
+        fun bindView(pokemon: Pokemon?) {
+            val context = itemView.context
+            pokemon?.let { pkm ->
+                with(itemBinding) {
+                    Glide.with(context).load(pkm.imageUrl).into(ivPokemonImage)
+                    val idText = "Nº ${pkm.formattedId}"
+                    tvPokemonId.text = idText
+                    tvPokemonName.text = pkm.formattedName
+
+                    for (i in pkm.types.indices) {
+                        val pkmTypeName = pkm.types[i].name
+
+                        when (i) {
+                            0 -> {
+                                tvType1.background =
+                                    TypeUtils(context, pkmTypeName).getBgDrawable()
+                                TypeUtils(context, pkmTypeName).getBgTint()?.let {
+                                    tvType1.background.setTint(it)
+                                }
+                                tvType1.text = pkmTypeName.replaceFirstChar { it.uppercase() }
+                                tvType1.setTextColor(TypeUtils(context, pkmTypeName).getTextColor())
+                            }
+                            1 -> {
+                                tvType2.background =
+                                    TypeUtils(context, pkmTypeName).getBgDrawable()
+                                TypeUtils(context, pkmTypeName).getBgTint()?.let {
+                                    tvType2.background.setTint(it)
+                                }
+                                tvType2.text = pkmTypeName.replaceFirstChar { it.uppercase() }
+                                tvType2.setTextColor(TypeUtils(context, pkmTypeName).getTextColor())
+                            }
+                        }
+                    }
+
+                    if (pkm.types.size <= 1) {
+                        tvType2.visibility = View.GONE
+                    }
+                    itemView.setOnClickListener {
+                        Toast.makeText(context, "Clicked on ${pokemon.name}", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }

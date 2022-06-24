@@ -2,11 +2,11 @@ package com.packpack.pokedexdroid.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.packpack.pokedexdroid.R
 import com.packpack.pokedexdroid.databinding.ActivityMainBinding
 import com.packpack.pokedexdroid.domain.Pokemon
 import com.packpack.pokedexdroid.viewmodel.PokemonViewModel
@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
         recyclerView = binding.rvPokemons
+        binding.pbLoading.visibility = View.VISIBLE
         viewModel.pokemons.observe(this) {
             loadRecyclerView(it)
         }
@@ -34,5 +35,6 @@ class MainActivity : AppCompatActivity() {
     private fun loadRecyclerView(pokemons: List<Pokemon?>) {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = PokemonAdapter(pokemons)
+        binding.pbLoading.visibility = View.GONE
     }
 }
