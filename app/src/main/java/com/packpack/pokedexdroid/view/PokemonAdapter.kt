@@ -1,9 +1,9 @@
 package com.packpack.pokedexdroid.view
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.packpack.pokedexdroid.databinding.PokemonItemBinding
@@ -66,8 +66,12 @@ class PokemonAdapter(private val pokemonList: List<Pokemon?>) :
                         tvType2.visibility = View.GONE
                     }
                     itemView.setOnClickListener {
-                        Toast.makeText(context, "Clicked on ${pokemon.name}", Toast.LENGTH_LONG)
-                            .show()
+                        val intent = Intent(
+                            itemBinding.root.context as MainActivity,
+                            PokemonDetailsActivity::class.java
+                        )
+                        intent.putExtra("pokemon", pkm)
+                        context.startActivity(intent)
                     }
                 }
             }

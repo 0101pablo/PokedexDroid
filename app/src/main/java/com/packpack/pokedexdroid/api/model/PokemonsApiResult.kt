@@ -1,5 +1,6 @@
 package com.packpack.pokedexdroid.api.model
 
+import com.packpack.pokedexdroid.domain.PokemonBaseStat
 import com.packpack.pokedexdroid.domain.PokemonType
 
 data class PokemonsApiResult(
@@ -17,7 +18,10 @@ data class PokemonResult(
 data class PokemonApiResult(
     val id: Int,
     val name: String,
-    val types: List<PokemonTypeSlot>
+    val types: List<PokemonTypeSlot>,
+    val height: Float,
+    val weight: Float,
+    val stats: List<PokemonBaseStat>
 )
 
 data class PokemonTypeSlot(
